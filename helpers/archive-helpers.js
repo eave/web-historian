@@ -31,10 +31,29 @@ exports.readListOfUrls = function(){
 exports.isUrlInList = function(){
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(url){
+  fs.appendFile(exports.paths.list, url + "\n", function(err) {
+    if (err) {
+      throw err;
+    }
+    console.log("Success! ^_^!!");
+  });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url, callback){
+  if (url[0] === "/") {url = url.slice(1);};
+  fs.readdir(exports.paths.archivedSites, function(err, files){
+    if (err) {
+      console.log("Error!!!! =(");
+    } else {
+      _.each(files, function(file) {
+        if (file === url) {
+          callback(true);
+        }
+      });
+      callback(false);
+    }
+  });
 };
 
 exports.downloadUrls = function(){
