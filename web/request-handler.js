@@ -11,14 +11,21 @@ var routes = {
 
 var getData = function(req, res) {
   if (routes[req.url]) {
-    console.log("Success");
     httpHelpers.serveAssets(res, (archive.paths.siteAssets + routes[req.url]), 200);
   }
   else {
+    console.log("I should be real!");
     archive.isURLArchived(req.url, function(result) {
       if (result) {
-        console.log((archive.paths.archivedSites + req.url));
         httpHelpers.serveAssets(res, (archive.paths.archivedSites + req.url), 200);
+      } else {
+        archive.isUrlInList(req.url, function(test) {
+          if (test) {
+            httpHelpers.serveAssets(res, (archive.paths.archivedSites + req.url), 200);
+          } else {
+            httpHelpers.fileNotFound(res);
+          }
+        });
       }
     });
   }
@@ -26,11 +33,8 @@ var getData = function(req, res) {
 
 var postData = function(req, res) {
   var testUrl = req._postData.url;
-  console.log(testUrl);
   archive.isURLArchived(testUrl, function(result) {
     if (result) {
-      console.log("passes");
-      console.log((archive.paths.archivedSites + testUrl));
       httpHelpers.serveAssets(res, (archive.paths.archivedSites + testUrl), 200);
     } else {
       archive.isUrlInList(testUrl, function(test) {

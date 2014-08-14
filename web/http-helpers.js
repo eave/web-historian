@@ -28,4 +28,9 @@ exports.redirectToLoading = function(res) {
   res.end();
 };
 
+exports.fileNotFound = function(res) {
+  res.writeHead(404, headers);
+  res.end();
+};
+
 // As you progress, keep thinking about what helper functions you can put here!
