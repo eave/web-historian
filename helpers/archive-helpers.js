@@ -25,18 +25,43 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(callback){
+  var dataArray = false;
+  fs.readFile(exports.paths.list, function (err, data) {
+    if (err) {
+      throw err; // may need to change this to handle errors
+    }
+    var dataArray = data.toString().split("\n");
+    callback(dataArray);
+  });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url, callback){
+  exports.readListOfUrls(function(dataArray) {
+    for (var i = 0; i < dataArray.length; i++) {
+      if (url === dataArray[i]) {
+        return callback(true);
+      }
+    }
+    callback(false);
+  });
+
+  // var urlList = exports.readListOfUrls();
+  // for (var i = 0; i < urlList.length; i++) {
+  //   if (url === urlList[i]) {
+  //     callback(true);
+  //   }
+  // }
+  // callback(false) ;
 };
 
-exports.addUrlToList = function(url){
-  fs.appendFile(exports.paths.list, url + "\n", function(err) {
+exports.addUrlToList = function(url, callback){
+  console.log("second test: " + url + "\n");
+  fs.appendFile(exports.paths.list, (url + "\n"), function(err) {
     if (err) {
       throw err;
     }
-    console.log("Success! ^_^!!");
+    callback();
   });
 };
 
@@ -44,7 +69,7 @@ exports.isURLArchived = function(url, callback){
   if (url[0] === "/") {url = url.slice(1);};
   fs.readdir(exports.paths.archivedSites, function(err, files){
     if (err) {
-      console.log("Error!!!! =(");
+      throw err;
     } else {
       _.each(files, function(file) {
         if (file === url) {

@@ -23,7 +23,9 @@ exports.serveAssets = function(res, asset, callback) {
   });
 };
 
-
-
+exports.redirectToLoading = function(res) {
+  res.writeHead(302, {location: '/public/loading.html'});
+  res.end();
+};
 
 // As you progress, keep thinking about what helper functions you can put here!

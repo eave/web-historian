@@ -24,7 +24,36 @@ var getData = function(req, res) {
   }
 };
 
-var postData = function(req, res) {};
+var postData = function(req, res) {
+  var testUrl = req._postData.url;
+  console.log(testUrl);
+  archive.isURLArchived(testUrl, function(result) {
+    if (result) {
+      console.log("passes");
+      console.log((archive.paths.archivedSites + testUrl));
+      httpHelpers.serveAssets(res, (archive.paths.archivedSites + testUrl), 200);
+    } else {
+      archive.isUrlInList(testUrl, function(test) {
+        if (test) {
+          httpHelpers.redirectToLoading(res);
+        } else {
+          archive.addUrlToList(testUrl, function() {
+            httpHelpers.redirectToLoading(res);
+          });
+        }
+      });
+      // var test = archive.isUrlInList(testUrl);
+      // if (test) {
+      //   httpHelpers.redirectToLoading(res);
+      // } else {
+      //   console.log("meow" + testUrl);
+      //   archive.addUrlToList(testUrl, function() {
+      //     httpHelpers.redirectToLoading(res);
+      //   });
+      // }
+    }
+  });
+};
 
 var actions = {
   "GET": getData,
