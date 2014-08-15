@@ -14,7 +14,6 @@ var getData = function(req, res) {
     httpHelpers.serveAssets(res, (archive.paths.siteAssets + routes[req.url]), 200);
   }
   else {
-    console.log("I should be real!");
     archive.isURLArchived(req.url, function(result) {
       if (result) {
         httpHelpers.serveAssets(res, (archive.paths.archivedSites + req.url), 200);
@@ -46,15 +45,6 @@ var postData = function(req, res) {
           });
         }
       });
-      // var test = archive.isUrlInList(testUrl);
-      // if (test) {
-      //   httpHelpers.redirectToLoading(res);
-      // } else {
-      //   console.log("meow" + testUrl);
-      //   archive.addUrlToList(testUrl, function() {
-      //     httpHelpers.redirectToLoading(res);
-      //   });
-      // }
     }
   });
 };
